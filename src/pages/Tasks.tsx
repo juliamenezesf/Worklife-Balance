@@ -11,10 +11,9 @@ export default function Tasks() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  // userId fixo (pois não existe login na aplicação)
+  // userId fixo, já que não temos login
   const userId = 1;
 
-  // novos campos
   const [date, setDate] = useState<string>(() => new Date().toISOString().slice(0, 10));
   const [startTime, setStartTime] = useState('09:00');
   const [durationMinutes, setDurationMinutes] = useState(60);
@@ -99,31 +98,32 @@ export default function Tasks() {
   }
 
   return (
-    <section className="space-y-6 max-w-4xl mx-auto">
+    <section className="space-y-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-0 pb-8">
       <PageHeader
         title="Tarefas"
-        subtitle="Organize suas tarefas do dia a dia."
+        subtitle="Organize suas tarefas do dia a dia. Agora os dados vêm da API."
       />
 
-      <form onSubmit={handleCreate} className="grid gap-4 max-w-xl">
-
+      <form onSubmit={handleCreate} className="grid gap-4 w-full">
+        {/* Título e descrição */}
         <div className="grid gap-2">
           <input
-            className="border rounded-lg px-3 py-2 dark:bg-slate-900 dark:border-slate-700"
+            className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-slate-900 dark:border-slate-700"
             placeholder="Título da tarefa"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
 
           <textarea
-            className="border rounded-lg px-3 py-2 dark:bg-slate-900 dark:border-slate-700"
+            className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-slate-900 dark:border-slate-700"
             placeholder="Descrição (opcional)"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
 
-        <div className="grid grid-cols-3 gap-3 text-sm">
+        {/* Data, horário e duração */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
           <div className="flex flex-col gap-1">
             <label>Data</label>
             <input
@@ -157,7 +157,8 @@ export default function Tasks() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 text-sm">
+        {/* Tipo e prioridade */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
           <div className="flex flex-col gap-1">
             <label>Tipo da tarefa</label>
             <select
@@ -186,11 +187,11 @@ export default function Tasks() {
           </div>
         </div>
 
-        {/* Botão */}
+        {/* Botão ocupa toda a largura no mobile, só o necessário em telas maiores */}
         <button
           type="submit"
           disabled={loading}
-          className="rounded-full px-5 py-2 bg-cyan-500 text-slate-900 text-sm font-medium hover:bg-cyan-400 disabled:opacity-60 disabled:cursor-not-allowed w-fit"
+          className="rounded-full px-5 py-2 bg-cyan-500 text-slate-900 text-sm font-medium hover:bg-cyan-400 disabled:opacity-60 disabled:cursor-not-allowed w-full sm:w-auto"
         >
           {loading ? 'Salvando…' : 'Adicionar tarefa'}
         </button>
@@ -206,7 +207,10 @@ export default function Tasks() {
 
         <ul className="divide-y divide-slate-200 dark:divide-slate-800">
           {tasks.map((task) => (
-            <li key={task.id} className="py-3 flex items-center justify-between">
+            <li
+              key={task.id}
+              className="py-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+            >
               <div>
                 <p className="font-medium text-sm">{task.title}</p>
 
@@ -228,7 +232,7 @@ export default function Tasks() {
               <button
                 type="button"
                 onClick={() => handleDelete(task.id)}
-                className="text-xs text-red-500 hover:underline"
+                className="text-xs text-red-500 hover:underline self-start sm:self-auto"
               >
                 Remover
               </button>
