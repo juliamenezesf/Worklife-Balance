@@ -11,7 +11,6 @@ export default function Tasks() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  // userId fixo, já que não temos login
   const userId = 1;
 
   const [date, setDate] = useState<string>(() => new Date().toISOString().slice(0, 10));
@@ -101,11 +100,11 @@ export default function Tasks() {
     <section className="space-y-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-0 pb-8">
       <PageHeader
         title="Tarefas"
-        subtitle="Organize suas tarefas do dia a dia. Agora os dados vêm da API."
+        subtitle="Organize suas tarefas do dia a dia."
       />
 
       <form onSubmit={handleCreate} className="grid gap-4 w-full">
-        {/* Título e descrição */}
+ 
         <div className="grid gap-2">
           <input
             className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-slate-900 dark:border-slate-700"
@@ -122,7 +121,6 @@ export default function Tasks() {
           />
         </div>
 
-        {/* Data, horário e duração */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
           <div className="flex flex-col gap-1">
             <label>Data</label>
@@ -157,7 +155,6 @@ export default function Tasks() {
           </div>
         </div>
 
-        {/* Tipo e prioridade */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
           <div className="flex flex-col gap-1">
             <label>Tipo da tarefa</label>
@@ -187,7 +184,6 @@ export default function Tasks() {
           </div>
         </div>
 
-        {/* Botão ocupa toda a largura no mobile, só o necessário em telas maiores */}
         <button
           type="submit"
           disabled={loading}
@@ -199,7 +195,6 @@ export default function Tasks() {
         {error && <p className="text-sm text-red-500">{error}</p>}
       </form>
 
-      {/* Lista de tarefas */}
       <div className="space-y-2">
         <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">
           Tarefas cadastradas
