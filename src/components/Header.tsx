@@ -1,23 +1,24 @@
-import ThemeToggle from './ThemeToggle';
 import { Link } from '../router/Router';
+import ThemeToggle from './ThemeToggle';
+import Logo from '../assets/logo-worklifebalance.png';
 
 export default function Header() {
   return (
-    <header className="border-b border-slate-200 dark:border-slate-800 bg-slate-900 text-slate-50">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo + título */}
+    <header className="border-b border-slate-800 bg-slate-900 text-slate-50">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-full bg-cyan-500 flex items-center justify-center text-slate-900 font-bold text-lg">
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="font-semibold text-slate-50 text-sm">Work-life balance</span>
-            <span className="text-[11px] text-slate-300 uppercase tracking-wide">
-              Trabalho híbrido
-            </span>
+          <img
+            src={Logo}
+            alt="Work-life balance logo"
+            className="h-10 w-10 rounded-xl shadow-lg object-cover"
+          />
+
+          <div className="leading-tight">
+            <p className="font-semibold text-sm">Work-life balance</p>
+            <p className="text-[11px] text-slate-400">TRABALHO HÍBRIDO</p>
           </div>
         </div>
-
-        <nav className="hidden md:flex items-center gap-5 text-sm text-slate-200">
+        <nav className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm sm:justify-center">
           <Link to="/">Início</Link>
           <Link to="/tasks">Tarefas</Link>
           <Link to="/mood">Humor</Link>
@@ -26,7 +27,8 @@ export default function Header() {
           <Link to="/members">Integrantes</Link>
         </nav>
 
-        <div className="flex items-center gap-3">
+        {/* Tema */}
+        <div className="self-start sm:self-auto">
           <ThemeToggle />
         </div>
       </div>
