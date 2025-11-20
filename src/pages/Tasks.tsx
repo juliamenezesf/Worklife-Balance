@@ -1,107 +1,245 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PageHeader from '../components/PageHeader';
+import { Task } from '../types/task';
+import { TasksService } from '../services/tasks';
 
-type LocalTask = {
-  id: number;
-  title: string;
-  description?: string;
-};
+type TaskType = 'FOCUS' | 'MEETING' | 'BREAK' | 'PERSONAL';
+type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH';
 
 export default function Tasks() {
-  const [tasks, setTasks] = useState<LocalTask[]>([
-    {
-      id: 1,
-      title: 'Bloco de foco — Projeto GS',
-      description: 'Trabalhar nas telas do Work-life balance.',
-    },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  function handleAdd(e: React.FormEvent) {
+  // userId fixo, já que não temos login
+  const userId = 1;
+
+  const [date, setDate] = useState<string>(() => new Date().toISOString().slice(0, 10));
+  const [startTime, setStartTime] = useState('09:00');
+  const [durationMinutes, setDurationMinutes] = useState(60);
+  const [taskType, setTaskType] = useState<TaskType>('FOCUS');
+  const [priority, setPriority] = useState<TaskPriority>('MEDIUM');
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function loadTasks() {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await TasksService.list();
+      setTasks(data);
+    } catch (err) {
+      console.error(err);
+      setError('Não foi possível carregar as tarefas.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
+  function buildDates() {
+    const start = new Date(`${date}T${startTime}:00`);
+    const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
+
+    return {
+      startAt: start.toISOString(),
+      endAt: end.toISOString(),
+    };
+  }
+
+  async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     if (!title.trim()) return;
 
-    const newTask: LocalTask = {
-      id: Date.now(),
-      title,
-      description,
-    };
+    try {
+      setLoading(true);
+      setError(null);
 
-    setTasks((prev) => [...prev, newTask]);
-    setTitle('');
-    setDescription('');
+      const { startAt, endAt } = buildDates();
+
+      await TasksService.create({
+        userId,
+        title,
+        description,
+        startAt,
+        endAt,
+        taskType,
+        priority,
+        status: 'PENDING',
+      });
+
+      setTitle('');
+      setDescription('');
+      await loadTasks();
+    } catch (err) {
+      console.error(err);
+      setError('Erro ao criar tarefa.');
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleRemove(id: number) {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+  async function handleDelete(id: number) {
+    try {
+      setLoading(true);
+      setError(null);
+      await TasksService.remove(id);
+      await loadTasks();
+    } catch (err) {
+      console.error(err);
+      setError('Erro ao remover tarefa.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <section className="space-y-6 max-w-4xl mx-auto">
+    <section className="space-y-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-0 pb-8">
       <PageHeader
         title="Tarefas"
-        subtitle="Organize suas tarefas do dia a dia. Por enquanto, os dados são locais."
+        subtitle="Organize suas tarefas do dia a dia. Agora os dados vêm da API."
       />
 
-      <form onSubmit={handleAdd} className="grid gap-3 max-w-lg">
-        <input
-          className="border rounded-lg px-3 py-2 dark:bg-slate-900 dark:border-slate-700"
-          placeholder="Título da tarefa"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+      <form onSubmit={handleCreate} className="grid gap-4 w-full">
+        {/* Título e descrição */}
+        <div className="grid gap-2">
+          <input
+            className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-slate-900 dark:border-slate-700"
+            placeholder="Título da tarefa"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
 
-        <textarea
-          className="border rounded-lg px-3 py-2 dark:bg-slate-900 dark:border-slate-700"
-          placeholder="Descrição (opcional)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+          <textarea
+            className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-slate-900 dark:border-slate-700"
+            placeholder="Descrição (opcional)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
 
+        {/* Data, horário e duração */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+          <div className="flex flex-col gap-1">
+            <label>Data</label>
+            <input
+              type="date"
+              className="border rounded-lg px-3 py-2 dark:bg-slate-900 dark:border-slate-700"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label>Início</label>
+            <input
+              type="time"
+              className="border rounded-lg px-3 py-2 dark:bg-slate-900 dark:border-slate-700"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label>Duração (min)</label>
+            <input
+              type="number"
+              min={15}
+              step={15}
+              className="border rounded-lg px-3 py-2 dark:bg-slate-900 dark:border-slate-700"
+              value={durationMinutes}
+              onChange={(e) => setDurationMinutes(Number(e.target.value))}
+            />
+          </div>
+        </div>
+
+        {/* Tipo e prioridade */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+          <div className="flex flex-col gap-1">
+            <label>Tipo da tarefa</label>
+            <select
+              className="border rounded-lg px-3 py-2 dark:bg-slate-900 dark:border-slate-700"
+              value={taskType}
+              onChange={(e) => setTaskType(e.target.value as TaskType)}
+            >
+              <option value="FOCUS">Foco</option>
+              <option value="MEETING">Reunião</option>
+              <option value="BREAK">Pausa</option>
+              <option value="PERSONAL">Pessoal</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label>Prioridade</label>
+            <select
+              className="border rounded-lg px-3 py-2 dark:bg-slate-900 dark:border-slate-700"
+              value={priority}
+              onChange={(e) => setPriority(e.target.value as TaskPriority)}
+            >
+              <option value="LOW">Baixa</option>
+              <option value="MEDIUM">Média</option>
+              <option value="HIGH">Alta</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Botão ocupa toda a largura no mobile, só o necessário em telas maiores */}
         <button
           type="submit"
-          className="rounded-full px-5 py-2 bg-cyan-500 text-slate-900 text-sm font-medium hover:bg-cyan-400 w-fit"
+          disabled={loading}
+          className="rounded-full px-5 py-2 bg-cyan-500 text-slate-900 text-sm font-medium hover:bg-cyan-400 disabled:opacity-60 disabled:cursor-not-allowed w-full sm:w-auto"
         >
-          Adicionar tarefa (local)
+          {loading ? 'Salvando…' : 'Adicionar tarefa'}
         </button>
+
+        {error && <p className="text-sm text-red-500">{error}</p>}
       </form>
 
+      {/* Lista de tarefas */}
       <div className="space-y-2">
         <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">
           Tarefas cadastradas
         </h2>
 
-        {tasks.length === 0 ? (
-          <p className="text-sm text-slate-500">Nenhuma tarefa cadastrada ainda.</p>
-        ) : (
-          <ul className="divide-y divide-slate-200 dark:divide-slate-800">
-            {tasks.map((task) => (
-              <li
-                key={task.id}
-                className="py-3 flex items-center justify-between gap-4"
+        <ul className="divide-y divide-slate-200 dark:divide-slate-800">
+          {tasks.map((task) => (
+            <li
+              key={task.id}
+              className="py-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div>
+                <p className="font-medium text-sm">{task.title}</p>
+
+                {task.description && (
+                  <p className="text-xs text-slate-400">{task.description}</p>
+                )}
+
+                {task.startAt && task.endAt && (
+                  <p className="text-[11px] text-slate-400">
+                    {new Date(task.startAt).toLocaleString()} —{' '}
+                    {new Date(task.endAt).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleDelete(task.id)}
+                className="text-xs text-red-500 hover:underline self-start sm:self-auto"
               >
-                <div>
-                  <p className="font-medium text-sm">{task.title}</p>
-                  {task.description && (
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {task.description}
-                    </p>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleRemove(task.id)}
-                  className="text-xs text-red-500 hover:underline"
-                >
-                  Remover
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+                Remover
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
 }
-
