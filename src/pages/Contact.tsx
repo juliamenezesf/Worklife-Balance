@@ -18,8 +18,6 @@ export default function Contact() {
         title="Contato & FAQ"
         subtitle="Veja se sua dúvida já está respondida ou envie uma mensagem."
       />
-
-      {/* FAQ */}
       <div className="grid gap-4 md:grid-cols-2">
         {faqs.map((item) => (
           <article
@@ -31,8 +29,6 @@ export default function Contact() {
           </article>
         ))}
       </div>
-
-      {/* Formulário estático */}
       <form className="space-y-3 max-w-md">
         <div className="flex flex-col gap-1 text-sm">
           <label>Nome</label>
@@ -63,7 +59,7 @@ export default function Contact() {
           type="button"
           className="rounded-full px-5 py-2 bg-cyan-500 text-slate-900 text-sm font-medium hover:bg-cyan-400 w-fit"
         >
-          Enviar (demo)
+          Enviar 
         </button>
       </form>
     </section>

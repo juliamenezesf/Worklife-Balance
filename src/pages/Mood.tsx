@@ -1,32 +1,87 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PageHeader from '../components/PageHeader';
-
-type MoodEntry = {
-  id: number;
-  score: number;
-  note?: string;
-};
+import { MoodLog } from '../types/mood';
+import { MoodLogsService } from '../services/moodlogs';
 
 export default function Mood() {
-  const [entries, setEntries] = useState<MoodEntry[]>([
-    { id: 1, score: 3, note: 'Dia moderado, um pouco cansada.' },
-  ]);
+  const [entries, setEntries] = useState<MoodLog[]>([]);
   const [score, setScore] = useState(3);
   const [note, setNote] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleAdd(e: React.FormEvent) {
+  const userId = 1;
+
+  async function loadEntries() {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await MoodLogsService.list();
+      const sorted = [...data].sort(
+        (a, b) => new Date(b.loggedAt).getTime() - new Date(a.loggedAt).getTime()
+      );
+      setEntries(sorted);
+    } catch (err) {
+      console.error(err);
+      setError('Não foi possível carregar os registros de humor.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadEntries();
+  }, []);
+
+  async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
-    const newEntry: MoodEntry = { id: Date.now(), score, note };
-    setEntries((prev) => [newEntry, ...prev]);
-    setNote('');
-    setScore(3);
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const loggedAt = new Date().toISOString();
+      const stressScore = (6 - score) * 20;
+
+      await MoodLogsService.create({
+        userId,
+        score,
+        note,
+        stressScore,
+        loggedAt,
+      });
+
+      setNote('');
+      setScore(3);
+
+      await loadEntries();
+    } catch (err) {
+      console.error(err);
+      setError('Erro ao salvar humor de hoje.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDelete(id: number) {
+    try {
+      setLoading(true);
+      setError(null);
+      await MoodLogsService.remove(id);
+      await loadEntries();
+    } catch (err) {
+      console.error(err);
+      setError('Erro ao remover registro de humor.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <section className="space-y-6 max-w-4xl mx-auto">
+    <section className="space-y-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-0 pb-8">
       <PageHeader
         title="Humor"
-        subtitle="Registre como você está se sentindo ao longo dos dias. Por enquanto, os dados são locais."
+        subtitle="Registre como você está se sentindo ao longo dos dias."
       />
 
       <form onSubmit={handleAdd} className="grid gap-3 max-w-md">
@@ -44,7 +99,7 @@ export default function Mood() {
                 ${
                   score === value
                     ? 'bg-cyan-500 text-slate-900 border-cyan-500'
-                    : 'border-slate-400 dark:border-slate-600 text-slate-700 dark:text-slate-200'
+                    : 'border-slate-400 dark:border-slate-600 text-slate-200'
                 }`}
             >
               {value}
@@ -61,28 +116,58 @@ export default function Mood() {
 
         <button
           type="submit"
-          className="rounded-full px-5 py-2 bg-cyan-500 text-slate-900 text-sm font-medium hover:bg-cyan-400 w-fit"
+          disabled={loading}
+          className="rounded-full px-5 py-2 bg-cyan-500 text-slate-900 text-sm font-medium hover:bg-cyan-400 disabled:opacity-60 disabled:cursor-not-allowed w-fit"
         >
-          Salvar humor de hoje
+          {loading ? 'Salvando…' : 'Salvar humor de hoje'}
         </button>
+
+        {error && <p className="text-sm text-red-500">{error}</p>}
       </form>
 
       <div className="space-y-2">
         <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-          Últimos registros (locais)
+          Últimos registros (API)
         </h2>
+
+        {loading && entries.length === 0 && (
+          <p className="text-sm text-slate-500">Carregando registros…</p>
+        )}
+
+        {!loading && entries.length === 0 && !error && (
+          <p className="text-sm text-slate-500">Nenhum registro de humor ainda.</p>
+        )}
+
         <ul className="space-y-2 text-sm">
           {entries.map((entry) => (
             <li
               key={entry.id}
-              className="rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-2 flex justify-between gap-3"
+              className="rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
             >
-              <span>Humor: {entry.score}/5</span>
-              {entry.note && (
-                <span className="text-slate-500 dark:text-slate-400 text-xs max-w-xs">
-                  {entry.note}
-                </span>
-              )}
+              <div>
+                <span className="font-medium">Humor: {entry.score}/5</span>
+                {entry.loggedAt && (
+                  <span className="block text-[11px] text-slate-500 dark:text-slate-400">
+                    {new Date(entry.loggedAt).toLocaleString()}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-3">
+                {entry.note && (
+                  <span className="text-slate-500 dark:text-slate-400 text-xs max-w-xs">
+                    {entry.note}
+                  </span>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => handleDelete(entry.id)}
+                  className="text-xs text-red-500 hover:underline self-start sm:self-auto"
+                >
+                  Remover
+                </button>
+              </div>
             </li>
           ))}
         </ul>
@@ -90,4 +175,3 @@ export default function Mood() {
     </section>
   );
 }
-
