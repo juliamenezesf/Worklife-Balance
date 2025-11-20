@@ -14,7 +14,7 @@ const members: Member[] = [
     name: 'Júlia Menezes',
     rm: '565568',
     turma: '1TDSPV',
-    github: 'https://github.com/juliamenezes',
+    github: 'https://github.com/juliamenezesf',
     linkedin: 'https://www.linkedin.com/in/julia-menezesf/',
     imageUrl: '/imgs/julia.jfif',
   },
