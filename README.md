@@ -1,73 +1,166 @@
-# React + TypeScript + Vite
+# 🌿 Worklife Balance — Trabalho Híbrido  
+Aplicação Front-End desenvolvida para a **Global Solution FIAP – 2025/2**.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+O projeto propõe uma plataforma simples, moderna e objetiva para ajudar profissionais que atuam no modelo **híbrido** a organizarem suas rotinas, realizando check-ins de humor, visualizando métricas básicas e navegando por páginas informativas com uma interface limpa, responsiva e intuitiva.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📌 Objetivo do Projeto
 
-## React Compiler
+Criar uma aplicação front-end funcional, estilizada e acessível, utilizando componentes modulares, TailwindCSS, React Router e Context API, promovendo uma experiência agradável ao usuário que busca equilíbrio entre produtividade e bem-estar.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🚀 Funcionalidades Principais
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🏡 **Home**
+Apresenta o conceito do projeto e direciona o usuário para os recursos disponíveis.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🧠 **Check-in de Humor**
+Página dedicada para registrar o humor do usuário, com slider e interface amigável.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 🧮 **Dashboard**
+Página de visualização com métricas simples e interface organizada.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 📋 **Tarefas (Organização)**
+Página de organização com layout estruturado para cadastrar e visualizar tarefas.  
+*(Nesta versão, ainda sem integração com API — mas preparada para expansão.)*
+
+### 🧩 **Outras páginas informativas**
+- Sobre
+- Integrantes
+- FAQ
+
+### 🌓 **Tema Claro/Escuro**
+Implementado com Context API, permitindo alternância simples entre temas com persistência visual.
+
+### 🧭 **Navegação com React Router**
+Todas as páginas são acessíveis a partir do header e organizadas em rotas claras.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+| Tecnologia | Descrição |
+|-----------|-----------|
+| **React + Vite** | Base da aplicação e build rápido |
+| **TypeScript** | Tipagem estática e segurança |
+| **TailwindCSS** | Estilização responsiva e moderna |
+| **React Router DOM** | Sistema de rotas |
+| **Context API** | Controle global de tema |
+| **Lucide Icons** | Ícones modernos |
+| **CSS Utility-first** | Estilo limpo e organizado |
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+Worklife-Balance/
+ ├── public/
+ │   └── vite.svg
+ ├── src/
+ │   ├── assets/
+ │   │   ├── integrantes/
+ │   │   └── logo.png
+ │   ├── components/
+ │   │   ├── Logo.tsx
+ │   │   ├── Header.tsx
+ │   │   ├── Footer.tsx
+ │   │   └── ThemeToggle.tsx
+ │   ├── context/
+ │   │   └── ThemeContext.tsx
+ │   ├── pages/
+ │   │   ├── Home.tsx
+ │   │   ├── Tasks.tsx
+ │   │   ├── Mood.tsx
+ │   │   ├── Dashboard.tsx
+ │   │   ├── About.tsx
+ │   │   ├── Members.tsx
+ │   │   └── Faq.tsx
+ │   ├── router/
+ │   │   └── index.tsx
+ │   ├── App.tsx
+ │   ├── main.tsx
+ │   └── index.css
+ ├── package.json
+ ├── tailwind.config.js
+ ├── tsconfig.json
+ └── vite.config.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ▶️ Como Rodar o Projeto
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1️⃣ Clonar o repositório
+
+```bash
+git clone https://github.com/juliamenezesf/Worklife-Balance.git
+cd Worklife-Balance
 ```
+
+### 2️⃣ Instalar dependências
+
+```bash
+npm install
+```
+
+### 3️⃣ Executar em modo desenvolvimento
+
+```bash
+npm run dev
+```
+
+Acesse o projeto em:
+
+👉 http://localhost:5173
+
+---
+
+## 🌐 Deploy (Opcional)
+
+```
+https://worklife-balance-kappa.vercel.app/
+```
+
+---
+
+## 📌 Requisitos FIAP Atendidos
+
+- [x] SPA com React Router  
+- [x] Componentização  
+- [x] TailwindCSS configurado  
+- [x] Tema claro/escuro  
+- [x] Páginas obrigatórias  
+- [x] Estrutura organizada  
+- [x] Código limpo  
+- [x] README completo  
+
+---
+## 👥 Integrantes
+
+* Pedro Henrique Costa — RM: 559932 — Turma: 1TDSPV
+* Júlia Kauane Menezes — RM: 565568 — Turma: 1TDSPV
+
+---
+## 🌿 Fluxo de Versionamento (Git Flow)
+
+* **Branches:**
+
+  * `main` → produção
+  * `develop` → integração
+  * `feature/*` → novas features
+
+---
+## 🛡️ Licença
+
+Projeto acadêmico — uso exclusivamente **educacional**.
+
+* **Link Repositório Github:**
+
+https://github.com/juliamenezesf/Worklife-Balance
+
+
+© 2025 - FIAP | Worklife Balance 
+---
