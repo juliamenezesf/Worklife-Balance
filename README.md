@@ -1,12 +1,11 @@
-# 🌿 Worklife Balance — Trabalho Híbrido  
+# 🌿 Worklife Balance — Trabalho Híbrido
 Aplicação Front-End desenvolvida para a **Global Solution FIAP – 2025/2**.
 
-O projeto propõe uma plataforma simples, moderna e objetiva para ajudar profissionais que atuam no modelo **híbrido** a organizarem suas rotinas, realizando check-ins de humor, visualizando métricas básicas e navegando por páginas informativas com uma interface limpa, responsiva e intuitiva.
+O projeto propõe uma plataforma simples, moderna e objetiva para ajudar profissionais que atuam no modelo **híbrido** a organizarem suas rotinas, realizando check-ins de humor, cadastrando tarefas, visualizando logs de humor e navegando por páginas informativas com uma interface limpa, responsiva e intuitiva.
 
 ---
 
 ## 📌 Objetivo do Projeto
-
 Criar uma aplicação front-end funcional, estilizada e acessível, utilizando componentes modulares, TailwindCSS, React Router e Context API, promovendo uma experiência agradável ao usuário que busca equilíbrio entre produtividade e bem-estar.
 
 ---
@@ -14,153 +13,142 @@ Criar uma aplicação front-end funcional, estilizada e acessível, utilizando c
 ## 🚀 Funcionalidades Principais
 
 ### 🏡 **Home**
-Apresenta o conceito do projeto e direciona o usuário para os recursos disponíveis.
+Página inicial com apresentação do projeto.
 
 ### 🧠 **Check-in de Humor**
-Página dedicada para registrar o humor do usuário, com slider e interface amigável.
-
-### 🧮 **Dashboard**
-Página de visualização com métricas simples e interface organizada.
+Registro diário de humor integrado à API.
 
 ### 📋 **Tarefas (Organização)**
-Página de organização com layout estruturado para cadastrar e visualizar tarefas.  
-*(Nesta versão, ainda sem integração com API — mas preparada para expansão.)*
+Página para cadastrar, listar e remover tarefas via API.
 
-### 🧩 **Outras páginas informativas**
-- Sobre
-- Integrantes
-- FAQ
+### 🧩 **Páginas Informativas**
+- Sobre  
+- Integrantes  
+- Contato/FAQ  
 
 ### 🌓 **Tema Claro/Escuro**
-Implementado com Context API, permitindo alternância simples entre temas com persistência visual.
+Controlado via Context API.
 
-### 🧭 **Navegação com React Router**
-Todas as páginas são acessíveis a partir do header e organizadas em rotas claras.
+### 🧭 **Rotas (SPA)**
+Navegação via React Router.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🌐 API Utilizada
+A aplicação consome dados da seguinte API Java hospedada no Render:
 
-| Tecnologia | Descrição |
-|-----------|-----------|
-| **React + Vite** | Base da aplicação e build rápido |
-| **TypeScript** | Tipagem estática e segurança |
-| **TailwindCSS** | Estilização responsiva e moderna |
-| **React Router DOM** | Sistema de rotas |
-| **Context API** | Controle global de tema |
-| **Lucide Icons** | Ícones modernos |
-| **CSS Utility-first** | Estilo limpo e organizado |
+🔗 **Base URL**
+```
+https://api-java-1-w4eg.onrender.com
+```
+
+---
+
+## 📡 Endpoints da API
+
+### 📋 TASKS
+| Método | Endpoint |
+|--------|----------|
+| **GET** | `/v1/tasks` |
+| **GET** | `/v1/tasks/{id}` |
+| **POST** | `/v1/tasks` |
+| **DELETE** | `/v1/tasks/{id}` |
+
+---
+
+### 😄 MOOD LOGS
+| Método | Endpoint |
+|--------|----------|
+| **GET** | `/v1/mood-logs` |
+| **GET** | `/v1/mood-logs/{id}` |
+| **POST** | `/v1/mood-logs` |
+| **DELETE** | `/v1/mood-logs/{id}` |
 
 ---
 
 ## 📁 Estrutura do Projeto
 
 ```
-Worklife-Balance/
+worklife-balance/
  ├── public/
- │   └── vite.svg
+ │   └── imgs/
+ │        ├── julia.jfif
+ │        └── pedro.jpg
  ├── src/
+ │   ├── api/
+ │   │   └── client.ts
  │   ├── assets/
- │   │   ├── integrantes/
- │   │   └── logo.png
+ │   │   └── logo-worklifebalance.png
  │   ├── components/
- │   │   ├── Logo.tsx
  │   │   ├── Header.tsx
- │   │   ├── Footer.tsx
+ │   │   ├── PageHeader.tsx
  │   │   └── ThemeToggle.tsx
  │   ├── context/
  │   │   └── ThemeContext.tsx
  │   ├── pages/
- │   │   ├── Home.tsx
- │   │   ├── Tasks.tsx
- │   │   ├── Mood.tsx
- │   │   ├── Dashboard.tsx
  │   │   ├── About.tsx
+ │   │   ├── Contact.tsx
+ │   │   ├── Home.tsx
  │   │   ├── Members.tsx
- │   │   └── Faq.tsx
+ │   │   ├── Mood.tsx
+ │   │   └── Tasks.tsx
  │   ├── router/
- │   │   └── index.tsx
+ │   │   └── Router.tsx
+ │   ├── services/
+ │   │   ├── moodlogs.ts
+ │   │   └── tasks.ts
+ │   ├── types/
+ │   │   ├── mood.ts
+ │   │   └── task.ts
  │   ├── App.tsx
- │   ├── main.tsx
- │   └── index.css
+ │   ├── App.css
+ │   ├── index.css
+ │   └── main.tsx
+ ├── .env
  ├── package.json
- ├── tailwind.config.js
- ├── tsconfig.json
- └── vite.config.ts
+ ├── vite-env.d.ts
+ └── README.md
 ```
 
 ---
 
 ## ▶️ Como Rodar o Projeto
 
-### 1️⃣ Clonar o repositório
-
+### 1️⃣ Clonar
 ```bash
 git clone https://github.com/juliamenezesf/Worklife-Balance.git
 cd Worklife-Balance
 ```
 
 ### 2️⃣ Instalar dependências
-
 ```bash
 npm install
 ```
 
-### 3️⃣ Executar em modo desenvolvimento
-
+### 3️⃣ Rodar aplicação
 ```bash
 npm run dev
 ```
 
-Acesse o projeto em:
-
-👉 http://localhost:5173
+Acesse: http://localhost:5173
 
 ---
 
-## 🌐 Deploy (Opcional)
-
+## 🌐 Deploy
 ```
 https://worklife-balance-kappa.vercel.app/
 ```
 
 ---
 
-## 📌 Requisitos FIAP Atendidos
-
-- [x] SPA com React Router  
-- [x] Componentização  
-- [x] TailwindCSS configurado  
-- [x] Tema claro/escuro  
-- [x] Páginas obrigatórias  
-- [x] Estrutura organizada  
-- [x] Código limpo  
-- [x] README completo  
-
----
 ## 👥 Integrantes
-
-* Pedro Henrique Costa — RM: 559932 — Turma: 1TDSPV
+* Pedro Henrique Costa — RM: 559932 — Turma: 1TDSPV  
 * Júlia Kauane Menezes — RM: 565568 — Turma: 1TDSPV
 
 ---
-## 🌿 Fluxo de Versionamento (Git Flow)
 
-* **Branches:**
-
-  * `main` → produção
-  * `develop` → integração
-  * `feature/*` → novas features
-
----
 ## 🛡️ Licença
+Projeto acadêmico — uso exclusivamente educacional.
 
-Projeto acadêmico — uso exclusivamente **educacional**.
-
-* **Link Repositório Github:**
-
+Repositorio:  
 https://github.com/juliamenezesf/Worklife-Balance
-
-
-© 2025 - FIAP | Worklife Balance 
----
